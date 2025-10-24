@@ -6,7 +6,7 @@ Can you figure out what is in the eax register at the end of the main function? 
 
 They gave a file that was in binary. Based on the challenge description, they told we have find what is in the eax registrar at the end of main function. So i disassembled the file using IDA, and searched for eax, there was a hexadecimal number over there. We have to convert it to decimal and then kept that in the flag. 
 
-![screenshot of solution](/images/Screenshot 2025-10-24 233007.png)
+![screenshot of solution](images/Screenshot 2025-10-24 233007.png)
 
 ## Flag:
 
