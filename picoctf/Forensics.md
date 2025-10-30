@@ -93,3 +93,40 @@ https://cyberchef.org/
 
 https://www.geeksforgeeks.org/computer-networks/what-is-tftp-trivial-file-transfer-protocol/
 
+***
+
+# 3. tunn3l v1s10n:
+
+We found this file. Recover the flag
+
+## Solution:
+
+- I first opened the file in notepad, but it was messed up. I then tried different things and none of them worked
+- I then opened it in a Hex editor, and it had a BM at the start, so it is a bmp file. I first tried adding .bmp extension to the file, but it didnt work.
+![image of hex editor of the file](images/Hex1.png)
+- I then searched and found that the file might be corrupt. So I compared it with another proper bmp file and looked up the file format for BMP file, and changed the size of the infoheader from "BA D0 00 00", which is 53434 bytes to "28 00 00 00", which is 40 bytes, and how it should be. Then i opened the file and got this
+
+![Image after 1st change](images/Tunnel2.png)
+- The image wasn't fully visible, it was like cropped, so I thought maybe the size of the image, its height or width need to be changed. Width is at an offset of 18 bytes, and 4 bytes are specified for width. I first tried changing the width to different values, but none of them worked. So I decided to change the height, height is at an offset of 22 bytes, and 4 bytes are specified for height. I changed it to around 800 pixels which is "32 03 00 00" in the hex editor,from around 300 pixels, which is "32 01 00 00" in hex editor.
+
+![Image of hex editor after all changes](images/Hex.png)
+- After changing the height, I opened the file and it had the flag
+![Final image containing flag](images/Tunnel1.png)
+
+
+
+## Flag:
+
+```
+picoCTF{qu1t3_a_v13w_2020}
+```
+
+## Concepts learnt:
+
+- I learnt about Hex files, and the basic format for bmp files in the hex editor. I learnt how we can use the hex editor and fix corrupted files. 
+
+
+## Resources:
+
+- https://www.ece.ualberta.ca/~elliott/ee552/studentAppNotes/2003_w/misc/bmp_file_format/bmp_file_format.htm
+- https://hexed.it/
