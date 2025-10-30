@@ -79,8 +79,10 @@ if __name__ == "__main__":
 
 ## Solution:
 
-- Include as many steps as you can with your thought process
-- You **must** include images such as screenshots wherever relevant.
+- They gave a python script where they first generated a key, then encrypted the cipher first with the xor function and then with the encrypt function.
+- So we had to make a code to first decrypt the encrypted function and then the xor function.
+- They also gave us the values of a and b. so we can remove the random generator that they gave in the source code.
+- With the below python code, we can decode the cipher and get the flag. 
 
 Python code to decrypt:
 ```
@@ -185,8 +187,10 @@ ciphertext (c): 1220012318588871886132524757898884422174534558055593713309088304
 
 ## Solution:
 
-- Include as many steps as you can with your thought process
-- You **must** include images such as screenshots wherever relevant.
+- From the challenge name and also the files they gave, we can understand that they used RSA algorithm to encrypt the code.
+- From one of the hint they gave, which was what will happend if the value of e is small, I searched up about that and found that if the value of exponent, which is e in this case is small, then it is vulnerable to attacks especially the cube root attack.
+- We first have to find the value of M to keep it in the for range by brute force, I first kept 2000 but it didnt work. Then I kept 5000 and it worked.
+- I We have to convert the integer to bytes and then to string. Then whenever we find pico, we have to print that part as the flag will start with that.
 
 Python code: 
 ```
