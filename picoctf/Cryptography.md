@@ -189,7 +189,7 @@ ciphertext (c): 1220012318588871886132524757898884422174534558055593713309088304
 
 - From the challenge name and also the files they gave, we can understand that they used RSA algorithm to encrypt the code.
 - From one of the hint they gave, which was what will happend if the value of e is small, I searched up about that and found that if the value of exponent, which is e in this case is small, then it is vulnerable to attacks especially the cube root attack.
-- We first have to find the value of M to keep it in the for range by brute force, I first kept 2000 but it didnt work. Then I kept 5000 and it worked.
+- We first have to find the value of M to keep it in the for range by brute force, I first kept 10000 but it didnt work. Then I kept 5000 and it worked.
 - I We have to convert the integer to bytes and then to string. Then whenever we find pico, we have to print that part as the flag will start with that.
 
 Python code: 
@@ -260,3 +260,129 @@ picoCTF{e_sh0u1d_b3_lArg3r_85d643d5}'
 - https://www.programiz.com/python-programming/function
 - https://amsghimire.medium.com/low-exponent-attack-511bf5d227fc
 - https://www.youtube.com/watch?v=2xHb9Fxa22w
+
+***
+
+# 3. RSA Oracle:
+
+Can you abuse the oracle?
+
+An attacker was able to intercept communications between a bank and a fintech company. They managed to get the message (ciphertext) and the password that was used to encrypt the message.
+
+After some intensive reconassainance they found out that the bank has an oracle that was used to encrypt the password and can be found here nc titan.picoctf.net 59904. Decrypt the password and use it to decrypt the message. The oracle can decrypt anything except the password.
+
+Hints:
+
+- Crytography Threat models: chosen plaintext attack.
+- OpenSSL can be used to decrypt the message. e.g openssl enc -aes-256-cbc -d ...
+- The key to getting the flag is by sending a custom message to the server by taking advantage of the RSA encryption algorithm.
+- Minimum requirements for a useful cryptosystem is CPA security.
+
+
+## Solution:
+
+- Since they mentioned chosen plaintext attack in the hints, I first looked up about it, and i learnt that we can use the oracle by sending our own messages to encrypt and decrypt and try using the RSA algorithm to find out the password. Basically we send multiple arguments to encrypt or decrypt.
+- I also read somehwere that RSA has homomorphic property, which is basically you can multiply two ciphertexts together to get a new ciphertext that, when decrypted, is the product of the original plaintexts. However this is only for multiplication, not addition or division. So using this property, we can make a code to calculate and find the password, since calculating such large numbers manually will be impossible.
+- After we get the password, they gave in the hint that we can use OpenSSL to decrypt the message. So i used the OpenSSL command on the message file with the password we decrypted and got the flag. 
+
+Python code to get password:
+```
+from subprocess import run, PIPE  
+  
+c = 1765037049764047724348114634473658734830490852066061345686916365658618194981097216750929421734812911680434647401939068526285652985802740837961814227312100
+  
+  
+print(f"c = {c}\n")  
+ 
+# Enter whatever u want, just keep the same thing in the oracle. 
+m1 = input("Enter message (m1): ")  
+m1_bytes = bytes(m1, "utf-8")  
+m1_int = ord(m1_bytes) 
+  
+print(f"Have the oracle encrypt this message (m1): {m1}\n")  
+c1 = int(input("Enter ciphertext from oracle (c1 = E(m1)): "))  
+print("\n")  
+ 
+# Exploit the homomorphic property of RSA
+c2 = c * c1  
+print(f"Have the oracle decrypt this message (c2 = c * c1): {c2}\n")  
+  
+m2 = int(input("Enter decrypted ciphertext as HEX (m2 = D(c2): "), 16)  
+print("\n")  
+ 
+# Exploit the homomorphic property of RSA some more
+m_int = m2 // m1_int  
+m = m_int.to_bytes(len(str(m_int)), "big").decode("utf-8").lstrip("\x00")
+print(f"Password (m = m2 / m1): {m}\n")  
+  
+print("-" * 50) 
+```
+Code terminal: 
+```
+c = 1765037049764047724348114634473658734830490852066061345686916365658618194981097216750929421734812911680434647401939068526285652985802740837961814227312100
+
+Enter message (m1): a
+Have the oracle encrypt this message (m1): a
+
+Enter ciphertext from oracle (c1 = E(m1)): 1894792376935242028465556366618011019548511575881945413668351305441716829547731248120542989065588556431978903597240454296152579184569578379625520200356186
+
+
+Have the oracle decrypt this message (c2 = c * c1): 3344378746901187057733146330417154614967897092097381232820769771567582019249609372563765215104944867176199885929270022282129502059626996351942254590865021586025981355523819624411257309507460128244944233368442952118580893027261393807751298523497094518989597199047515930901371746729140121027277016789387650600
+
+Enter decrypted ciphertext as HEX (m2 = D(c2): 154d4ab6f999
+
+
+Password (m = m2 / m1): 881d9
+```
+Ubuntu terminal for exploiting Oracle and getting flag:
+```
+saltycoder@LAPTOP-LP81GQQE:~$ nc titan.picoctf.net 55043
+*****************************************
+****************THE ORACLE***************
+*****************************************
+what should we do for you?
+E --> encrypt D --> decrypt.
+E
+enter text to encrypt (encoded length must be less than keysize): a
+a
+
+encoded cleartext as Hex m: 61
+
+ciphertext (m ^ e mod n) 1894792376935242028465556366618011019548511575881945413668351305441716829547731248120542989065588556431978903597240454296152579184569578379625520200356186
+
+what should we do for you?
+E --> encrypt D --> decrypt.
+D
+Enter text to decrypt: 3344378746901187057733146330417154614967897092097381232820769771567582019249609372563765215104944867176199885929270022282129502059626996351942254590865021586025981355523819624411257309507460128244944233368442952118580893027261393807751298523497094518989597199047515930901371746729140121027277016789387650600
+decrypted ciphertext as hex (c ^ d mod n): 154d4ab6f999
+decrypted ciphertext: MJ¶ù
+
+what should we do for you?
+E --> encrypt D --> decrypt.
+^C
+//We got the password by here. 
+saltycoder@LAPTOP-LP81GQQE:/mnt/d/temp$ openssl enc -aes-256-cbc -d -in secret.enc -k 881d9
+*** WARNING : deprecated key derivation used.
+Using -iter or -pbkdf2 would be better.
+picoCTF{su((3ss_(r@ck1ng_r3@_881d93b6}
+```
+
+## Flag:
+
+```
+picoCTF{su((3ss_(r@ck1ng_r3@_881d93b6}
+```
+
+## Concepts learnt:
+
+- I learnt about the chosen plaintext attack, which is basically where an attacker can select specific plaintexts and obtain the corresponding ciphertexts, which they then use to analyze and break the encryption scheme.
+- I also learnt that RSA has homomorphic property for multiplication, which means we can multiply two ciphertexts together to get a new ciphertext that, when decrypted, is the product of the original plaintexts.
+
+
+## Resources:
+
+- https://en.wikipedia.org/wiki/Chosen-plaintext_attack
+- https://taylorandfrancis.com/knowledge/Engineering_and_technology/Computer_science/Chosen-plaintext_attack/
+- https://crypto.stackexchange.com/questions/3555/homomorphic-cryptosystems-in-rsa
+- https://dualitytech.com/blog/what-is-homomorphic-encryption/
+- https://www.youtube.com/watch?v=r8psTgL4K4M
