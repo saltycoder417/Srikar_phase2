@@ -246,12 +246,12 @@ picoCTF{e_sh0u1d_b3_lArg3r_85d643d5}'
 
 ## Concepts learnt:
 
-- Include the new topics you've come across and explain them in brief
-- 
+- I learnt about RSA encryption, which is a asymmetric encryption where the encryption can be done with the public key, but decryption can only be done with the private key. There are mathematical formulas for encryption and decryption.
+- I also learnt how RSA is vulnerable when we use weak keys. Like in this challenge, they value of the exponent was small, which made the encryption weak and we could do a cube root attack. 
 
 ## Notes:
 
-- Include any alternate tangents you went on while solving the challenge, including mistakes & other solutions you found.
+- I made mistakes while making the python code as the formulas used in RSA and the numbers are pretty big, so we have to be careful.
 
 ## Resources:
 
