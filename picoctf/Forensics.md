@@ -91,3 +91,5 @@ https://askubuntu.com/questions/1400195/extract-embed-file-from-cropped-image-us
 
 https://cyberchef.org/
 
+https://www.geeksforgeeks.org/computer-networks/what-is-tftp-trivial-file-transfer-protocol/
+
