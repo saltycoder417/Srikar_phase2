@@ -79,3 +79,37 @@ FCSC{b1dee4eeadf6c4e60aeb142b0b486344e64b12b40d1046de95c89ba5e23a9925}
 
 ***
 
+# 3. Bare metal alchemist: 
+
+My friend recommended me this anime but i think i've heard a wrong name.
+
+They also gave a .elf file. 
+
+## Solution:
+
+- They gave a elf file, so I first searched on google what a elf file and and how we can open it. It told that its an executable format file and we can use a disassembler to get the code.
+- I first tried keeping it in IDA, but it didnt open, and it seems we need the pro version.
+- So I downloaded Ghidra to diassemble the file. After I disassembled the file, there was a code, and it was similar to the challenges in reverse engineering.
+-  The hint they gave was something related to anime. So I searched it up and found that alchemy is basically transformation of one thing and reconstructing it into another. That was a similar thing the code was doing, here i used a formula which was XOR with 0xA5 to transform the bytes back into their original. The code used high resister and address usage, so I had to take some time to understand it. 
+-  so basically one register was given a number 0xa5 which is 165 and loop was given an address and an operation was performed on every byte and loops stops when the encrypted byte equals to the key and then a null character was present so the plain text was xored with key and exits on 0 byte so we xored the encrypted byte with key to decrypt all bytes one by one and then we obtain the flag.
+-  After all this is done, we have to xore each number using some online xore website, and then we will get the flag.
+
+![image](images/Bare.png)
+
+## Flag:
+
+```
+TFCCTF{Th1s_1s_s0m3_s1mpl3_4rduno_f1rmw4re}
+```
+
+## Concepts learnt:
+
+- I learnt that we can use ghidra for free to disassemble codes.
+- I learnt that C codes can also be written in form of registers and addresses which is pretty complex. 
+
+
+## Resources:
+
+- https://www.geeksforgeeks.org/linux-unix/readelf-command-in-linux-with-examples/
+- https://onlinetools.com/hex/xor-hex-numbers
+- https://xor.pw/
